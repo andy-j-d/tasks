@@ -1,5 +1,11 @@
 import React from 'react';
 
+export type TaskProps = {
+  id: string,
+  content: string,
+  completed: boolean,
+};
+
 const Task = ({
   content,
   contentFieldName,
@@ -8,7 +14,7 @@ const Task = ({
   onChangeTextField,
   onChangeBooleanField,
   onRemove,
-}) => (
+}: TaskProps) => (
   <article>
     <div>
       <label htmlFor={contentFieldName}>Task:</label>

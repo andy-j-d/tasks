@@ -6,6 +6,7 @@
     "name": "Andrew Dushane"
   },
   "dependencies": {
+    "flow-bin": "^0.54.1",
     "guid": "^0.0.12",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -19,6 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "flow": "flow",
     "eject": "react-scripts eject"
   }
 }

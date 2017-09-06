@@ -1,8 +1,16 @@
+// @flow
+
 import React from 'react';
 import { compose, withState, withHandlers, withProps } from 'recompose';
 import guid from 'guid';
 import storage from 'safe-localstorage';
-import Task from './Task';
+import Task, { TaskProps } from './Task';
+
+type Props = {
+  visibleTasks: Array<TaskProps>,
+  showCompleted: boolean,
+  showCompletedToggle: boolean,
+};
 
 const Tasks = ({
   visibleTasks,
@@ -10,7 +18,7 @@ const Tasks = ({
   showCompletedToggle,
   toggleShowCompleted,
   onAdd,
-}) => (
+}: Props) => (
   <section>
     <button onClick={onAdd}>New task</button>
     {showCompletedToggle && (
