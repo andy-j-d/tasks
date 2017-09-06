@@ -1,15 +1,19 @@
 import React from 'react';
 import { compose, withState, withHandlers, withProps } from 'recompose';
 import guid from 'guid';
+import storage from 'safe-localstorage';
 import Task from './Task';
 
-const showCompletedToggle = tasks =>
-  !!tasks.length && tasks.some(({ completed }) => completed);
-
-const Tasks = ({ visibleTasks, showCompleted, toggleShowCompleted, onAdd }) => (
+const Tasks = ({
+  visibleTasks,
+  showCompleted,
+  showCompletedToggle,
+  toggleShowCompleted,
+  onAdd,
+}) => (
   <section>
     <button onClick={onAdd}>New task</button>
-    {showCompletedToggle(visibleTasks) && (
+    {showCompletedToggle && (
       <button onClick={toggleShowCompleted}>
         {showCompleted ? 'Hide' : 'Show'} Completed
       </button>
@@ -25,15 +29,33 @@ const newTask = () => ({ id: guid.raw(), content: '', completed: false });
 
 const parseFieldName = fieldName => fieldName.split('-')[0];
 
+const saveTasks = tasks => {
+  storage.set('tasks', JSON.stringify(tasks));
+};
+
 export default compose(
-  withState('tasks', 'updateTasks', []),
-  withState('showCompleted', 'updateShowCompleted', true),
+  withState(
+    'tasks',
+    'setTasks',
+    storage.get('tasks') ? JSON.parse(storage.get('tasks')) : [],
+  ),
+  withState(
+    'showCompleted',
+    'updateShowCompleted',
+    storage.get('showCompleted') === 'false' ? false : true,
+  ),
   withHandlers({
-    onAdd: ({ tasks, updateTasks }) => () => {
-      updateTasks([...tasks, newTask()]);
+    onAdd: ({ tasks, setTasks }) => () => {
+      setTasks([...tasks, newTask()]);
+    },
+    updateTasks: ({ setTasks }) => tasks => {
+      saveTasks(tasks);
+      setTasks(tasks);
     },
     toggleShowCompleted: ({ showCompleted, updateShowCompleted }) => () => {
-      updateShowCompleted(!showCompleted);
+      const newValue = !showCompleted;
+      storage.set('showCompleted', newValue.toString());
+      updateShowCompleted(newValue);
     },
   }),
   withProps(({ tasks, updateTasks, showCompleted }) => {
@@ -56,6 +78,8 @@ export default compose(
     }));
     return {
       visibleTasks,
+      showCompletedToggle:
+        !!tasks.length && tasks.some(({ completed }) => completed),
     };
   }),
 )(Tasks);
