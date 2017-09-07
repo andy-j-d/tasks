@@ -10,6 +10,8 @@ type Props = {
   visibleTasks: Array<TaskProps>,
   showCompleted: boolean,
   showCompletedToggle: boolean,
+  toggleShowCompleted: Function,
+  onAdd: Function,
 };
 
 const Tasks = ({

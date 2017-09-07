@@ -4,6 +4,10 @@ export type TaskProps = {
   id: string,
   content: string,
   completed: boolean,
+  completedFieldName: string,
+  onChangeTextField: Function,
+  onChangeBooleanField: Function,
+  onRemove: Function,
 };
 
 const Task = ({
