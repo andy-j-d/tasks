@@ -12,6 +12,7 @@ type Props = {
   showCompletedToggle: boolean,
   toggleShowCompleted: Function,
   onAdd: Function,
+  title: string,
 };
 
 const Tasks = ({
@@ -20,8 +21,10 @@ const Tasks = ({
   showCompletedToggle,
   toggleShowCompleted,
   onAdd,
+  title = 'Task list',
 }: Props) => (
   <section>
+    <h2>{title}</h2>
     <button onClick={onAdd}>New task</button>
     {showCompletedToggle && (
       <button onClick={toggleShowCompleted}>
@@ -47,7 +50,7 @@ export default compose(
   withState(
     'tasks',
     'setTasks',
-    storage.get('tasks') ? JSON.parse(storage.get('tasks')) : [],
+    storage.get('tasks') ? JSON.parse(storage.get('tasks')) : [newTask()],
   ),
   withState(
     'showCompleted',
