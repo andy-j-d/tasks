@@ -1,4 +1,16 @@
 import React from 'react';
+import styled from 'styled-components';
+
+import TextField from 'material-ui/TextField';
+import IconButton from 'material-ui/IconButton';
+import Check from 'material-ui-icons/Check';
+import CheckBox from 'material-ui-icons/CheckBoxOutlineBlank';
+import Delete from 'material-ui-icons/Delete';
+
+const Row = styled.article`
+  display: flex;
+  flex-flow: row-nowrap;
+`;
 
 export type TaskProps = {
   id: string,
@@ -19,24 +31,25 @@ const Task = ({
   onChangeBooleanField,
   onRemove,
 }: TaskProps) => (
-  <article>
-    <div>
-      <label htmlFor={contentFieldName}>Task:</label>
-      <input
-        value={content}
-        name={contentFieldName}
-        id={contentFieldName}
-        onChange={onChangeTextField}
-      />
-      <button
-        onClick={onChangeBooleanField('completed')}
-        name={completedFieldName}
-      >
-        Mark {completed ? 'in' : ''}complete
-      </button>
-      <button onClick={onRemove}>Delete</button>
-    </div>
-  </article>
+  <Row>
+    <TextField
+      hintText="New task"
+      value={content}
+      name={contentFieldName}
+      id={contentFieldName}
+      onChange={onChangeTextField}
+      fullWidth
+    />
+    <IconButton
+      onClick={onChangeBooleanField('completed')}
+      tooltip={`Mark ${completed ? 'in' : ''}complete`}
+    >
+      {completed ? <Check /> : <CheckBox />}
+    </IconButton>
+    <IconButton onClick={onRemove} tooltip="Delete task">
+      <Delete />
+    </IconButton>
+  </Row>
 );
 
 export default Task;

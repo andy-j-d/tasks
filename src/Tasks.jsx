@@ -5,9 +5,9 @@ import { compose, withState, withHandlers, withProps } from 'recompose';
 import guid from 'guid';
 import storage from 'safe-localstorage';
 import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import Add from 'material-ui-icons/Add';
+import Paper from 'material-ui/Paper';
 
 import Task, { TaskProps } from './Task';
 import MainMenu from './MainMenu';
@@ -47,7 +47,9 @@ const Tasks = ({
         />
       }
     />
-    {visibleTasks.map(task => <Task {...task} key={task.id} />)}
+    <Paper style={{ padding: 20 }}>
+      {visibleTasks.map(task => <Task {...task} key={task.id} />)}
+    </Paper>
   </section>
 );
 
