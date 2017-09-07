@@ -2,15 +2,19 @@
 
 import React from 'react';
 import { compose, withState, withHandlers, withProps } from 'recompose';
+import styled from 'styled-components';
 import guid from 'guid';
 import storage from 'safe-localstorage';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
 import Add from 'material-ui-icons/Add';
 import Paper from 'material-ui/Paper';
 
 import Task, { TaskProps } from './Task';
 import MainMenu from './MainMenu';
+
+const Container = styled.section`margin-bottom: 10px;`;
 
 type Props = {
   visibleTasks: Array<TaskProps>,
@@ -29,7 +33,7 @@ const Tasks = ({
   onAdd,
   title = 'Task List',
 }: Props) => (
-  <section>
+  <Container>
     <AppBar
       title={title}
       onRightIconButtonTouchTap={onAdd}
@@ -49,8 +53,19 @@ const Tasks = ({
     />
     <Paper style={{ padding: 20 }}>
       {visibleTasks.map(task => <Task {...task} key={task.id} />)}
+      <FloatingActionButton
+        onClick={onAdd}
+        mini
+        style={{
+          position: 'fixed',
+          bottom: 10,
+          right: 10,
+        }}
+      >
+        <Add />
+      </FloatingActionButton>
     </Paper>
-  </section>
+  </Container>
 );
 
 const updateById = (tasks, id, key, value) =>
@@ -62,6 +77,10 @@ const parseFieldName = fieldName => fieldName.split('-')[0];
 
 const saveTasks = tasks => {
   storage.set('tasks', JSON.stringify(tasks));
+};
+
+const scrollToBottom = () => {
+  window.scrollTo(0, document.body.scrollHeight);
 };
 
 export default compose(
@@ -77,7 +96,7 @@ export default compose(
   ),
   withHandlers({
     onAdd: ({ tasks, setTasks }) => () => {
-      setTasks([...tasks, newTask()]);
+      setTasks([...tasks, newTask()], scrollToBottom);
     },
     updateTasks: ({ setTasks }) => tasks => {
       saveTasks(tasks);
