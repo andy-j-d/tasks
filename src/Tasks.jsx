@@ -4,7 +4,13 @@ import React from 'react';
 import { compose, withState, withHandlers, withProps } from 'recompose';
 import guid from 'guid';
 import storage from 'safe-localstorage';
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import Add from 'material-ui-icons/Add';
+
 import Task, { TaskProps } from './Task';
+import MainMenu from './MainMenu';
 
 type Props = {
   visibleTasks: Array<TaskProps>,
@@ -24,13 +30,23 @@ const Tasks = ({
   title = 'Task list',
 }: Props) => (
   <section>
-    <h2>{title}</h2>
-    <button onClick={onAdd}>New task</button>
-    {showCompletedToggle && (
-      <button onClick={toggleShowCompleted}>
-        {showCompleted ? 'Hide' : 'Show'} Completed
-      </button>
-    )}
+    <AppBar
+      title={title}
+      onRightIconButtonTouchTap={onAdd}
+      iconElementRight={
+        <IconButton tooltip="Add task">
+          <Add />
+        </IconButton>
+      }
+      iconElementLeft={
+        <MainMenu
+          toggleShowCompleted={toggleShowCompleted}
+          toggleShowCompletedText={`${showCompleted
+            ? 'Hide'
+            : 'Show'} Completed`}
+        />
+      }
+    />
     {visibleTasks.map(task => <Task {...task} key={task.id} />)}
   </section>
 );
