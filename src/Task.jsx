@@ -38,6 +38,7 @@ const Task = ({
       name={contentFieldName}
       id={contentFieldName}
       onChange={onChangeTextField}
+      autoFocus={content === ''}
       fullWidth
     />
     <IconButton
