@@ -27,7 +27,7 @@ const Tasks = ({
   showCompletedToggle,
   toggleShowCompleted,
   onAdd,
-  title = 'Task list',
+  title = 'Task List',
 }: Props) => (
   <section>
     <AppBar
