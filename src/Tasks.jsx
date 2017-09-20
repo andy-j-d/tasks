@@ -79,8 +79,8 @@ const saveTasks = tasks => {
   storage.set('tasks', JSON.stringify(tasks));
 };
 
-const scrollToBottom = () => {
-  window.scrollTo(0, document.body.scrollHeight);
+const scrollToTop = () => {
+  window.scrollTo(0, 0);
 };
 
 export default compose(
@@ -96,7 +96,7 @@ export default compose(
   ),
   withHandlers({
     onAdd: ({ tasks, setTasks }) => () => {
-      setTasks([...tasks, newTask()], scrollToBottom);
+      setTasks([newTask(), ...tasks], scrollToTop);
     },
     updateTasks: ({ setTasks }) => tasks => {
       saveTasks(tasks);
