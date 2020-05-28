@@ -14,7 +14,9 @@ import Paper from 'material-ui/Paper';
 import Task, { TaskProps } from './Task';
 import MainMenu from './MainMenu';
 
-const Container = styled.section`margin-bottom: 10px;`;
+const Container = styled.section`
+  margin-bottom: 10px;
+`;
 
 type Props = {
   visibleTasks: Array<TaskProps>,
@@ -45,14 +47,16 @@ const Tasks = ({
       iconElementLeft={
         <MainMenu
           toggleShowCompleted={toggleShowCompleted}
-          toggleShowCompletedText={`${showCompleted
-            ? 'Hide'
-            : 'Show'} Completed`}
+          toggleShowCompletedText={`${
+            showCompleted ? 'Hide' : 'Show'
+          } Completed`}
         />
       }
     />
     <Paper style={{ padding: 20 }}>
-      {visibleTasks.map(task => <Task {...task} key={task.id} />)}
+      {visibleTasks.map((task) => (
+        <Task {...task} key={task.id} />
+      ))}
       <FloatingActionButton
         onClick={onAdd}
         mini
@@ -69,19 +73,31 @@ const Tasks = ({
 );
 
 const updateById = (tasks, id, key, value) =>
-  tasks.map(task => (task.id === id ? { ...task, [key]: value } : task));
+  tasks.map((task) => (task.id === id ? { ...task, [key]: value } : task));
 
-const newTask = () => ({ id: guid.raw(), content: '', completed: false });
+const newTask = () => ({
+  id: guid.raw(),
+  content: '',
+  completed: false,
+  dateCreated: Date.now(),
+});
 
-const parseFieldName = fieldName => fieldName.split('-')[0];
+const parseFieldName = (fieldName) => fieldName.split('-')[0];
 
-const saveTasks = tasks => {
+const saveTasks = (tasks) => {
   storage.set('tasks', JSON.stringify(tasks));
 };
 
-const scrollToTop = () => {
-  window.scrollTo(0, 0);
-};
+const sortTasks = (tasks) =>
+  [...tasks].sort((a, b) => {
+    if (a.completed && !b.completed) {
+      return 1;
+    }
+    if (a.dateCreated < b.dateCreated) {
+      return -1;
+    }
+    return 0;
+  });
 
 export default compose(
   withState(
@@ -96,9 +112,9 @@ export default compose(
   ),
   withHandlers({
     onAdd: ({ tasks, setTasks }) => () => {
-      setTasks([newTask(), ...tasks], scrollToTop);
+      setTasks([newTask(), ...tasks]);
     },
-    updateTasks: ({ setTasks }) => tasks => {
+    updateTasks: ({ setTasks }) => (tasks) => {
       saveTasks(tasks);
       setTasks(tasks);
     },
@@ -112,16 +128,17 @@ export default compose(
     const tasksToShow = showCompleted
       ? tasks
       : tasks.filter(({ completed }) => !completed);
-    const visibleTasks = tasksToShow.map(task => ({
+    const orderedTasks = sortTasks(tasksToShow);
+    const visibleTasks = orderedTasks.map((task) => ({
       ...task,
       onChangeTextField: ({ target: { name, value } }) => {
         updateTasks(updateById(tasks, task.id, parseFieldName(name), value));
       },
-      onChangeBooleanField: key => () => {
+      onChangeBooleanField: (key) => () => {
         updateTasks(updateById(tasks, task.id, key, !task[key]));
       },
       onRemove: () => {
-        updateTasks(tasks.filter(t => t.id !== task.id));
+        updateTasks(tasks.filter((t) => t.id !== task.id));
       },
       contentFieldName: `content-${task.id}`,
       completedFieldName: `completed-${task.id}`,
